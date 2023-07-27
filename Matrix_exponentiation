@@ -1,0 +1,90 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define int long long int
+#define vi vector<int>
+#define pb push_back
+#define ff first
+#define ss second
+#define pi pair<int,int>
+#define pii vector<pi>
+#define lcm(a,b) a*b / (__gcd(a,b))
+#define mp unordered_map<int,int>
+#define REP(i,a,b) for(int i = a; i < b; i++)
+#define SQ(a) (a)*(a)
+#define MP make_pair
+const int mod = 1e9 + 7;
+const int MAX = 55;
+int mat[MAX][MAX]; // given matrix
+int I[MAX][MAX];// identity matrix
+// code to write matrix multiplication
+void multiply(int a[][MAX], int b[][MAX], int m) {
+    int res[MAX][MAX];
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < m; j++) {
+            res[i][j] = 0;
+            for (int k = 0; k < m; k++) {
+                res[i][j] += (a[i][k] * b[k][j]) % mod;
+                res[i][j] %= mod;
+            }
+        }
+    }
+    //finally restoring to indentity matrix just like we do in to store int ans
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < m; j++) {
+            a[i][j] = res[i][j];
+        }
+    }
+}
+// matrix exponentiation techniques 
+void exponentiation(int a[][MAX], int b[][MAX], int n, int m) 
+// if n == 0 the answer should be identity matrix
+    if (n == 0) {
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < m; j++) {
+                if (i == j) a[i][j] = 1;
+                else a[i][j] = 0;
+            }
+        }
+        return;
+    }
+
+    while (n) {
+        if (n & 1) {
+            multiply(a, b, m);
+            n--;
+        } else {
+            multiply(b, b, m);
+            n /= 2;
+        }
+    }
+}
+
+void solve() {
+    int tc;
+    cin >> tc;
+    while (tc--) {
+        int m, n;
+        cin >> m >> n;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < m; j++) {
+                cin >> mat[i][j];
+                if (i == j) I[i][j] = 1;
+                else I[i][j] = 0;
+            }
+        }
+        exponentiation(I, mat, n, m);
+        // final answer would be stored in identity matrix
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < m; j++) {
+                cout << I[i][j] << " ";
+            }
+            cout << endl;
+        }
+    }
+}
+signed main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    solve();
+    return 0;
+}
